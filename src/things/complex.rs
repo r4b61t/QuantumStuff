@@ -1,6 +1,4 @@
-use pyo3::prelude::*;
-use rayon::prelude::*;
-use std::ops::Mul;
+use std::ops::{Mul,Add};
 
 #[derive(Copy, Clone)]
 pub struct Complex {
@@ -14,6 +12,16 @@ impl Mul for Complex {
         real : self.real * another.real - self.img * another.img,
         img  : self.real * another.img + self.img * another.real,}
     }
+}
+
+impl Add for Complex {
+    type Output = Self;
+
+    fn add(self, another: Self) -> Self { Self{
+        real : self.real + another.real,
+        img  : self.img + another.img ,}
+    }
+
 }
 
 pub fn from_these(a: f64, b:f64) -> Complex {
