@@ -1,36 +1,64 @@
 use pyo3::prelude::*;
-use rayon::prelude::*;
 mod things;
 pub use crate::things::*;
+#[pyclass]
+struct Register{
+    state: State
+}
+
+#[pyclass]
+struct QGate{
+    gate: Gate
+}
+
+#[pymethods]
+impl QGate{
+    #[new]
+    pub fn new(a: Vec<f64>, b: Vec<f64>, c: Vec<f64> ,d: Vec<f64>) -> Self {
+        Self{gate: Gate::new(a, b, c, d)}
+    }
+}
+#[pymethods]
+impl Register {
+    #[new]
+    fn new(qubits: u32) -> Self {
+        Self{state: State::new(qubits)}
+    }
+
+    fn apply_gate(&mut self, gate: &QGate, targets: Vec<u32>, controls: Vec<u32>){
+        self.state.apply_gate(&gate.gate, targets, controls)
+    }
+    
+    fn probabilities(&self) -> Vec<f64>{
+        self.state.probabilities()
+    }
+    
+    fn measure(&self) -> u32 {
+        self.state.measure()
+    }
+    // measure
+    
+}
 
 #[pyfunction]
-fn sum_as_string(a: f64, b: f64) -> Py<PyAny> {
-    let test_complex: Complex = from_these(a, b);
+fn main() -> Py<PyAny> {
     let mut test_state: State = State::new(3);
-    let z = from_these(0.7071067811865475, 0.0);
-    let hadamard = Gate::Single { _00: z, _01: z, _10: z, _11: from_these(-1.0, 0.0) * z };
-    let x =  Gate::Single { _00: from_these(0.0, 0.0), _01: from_these(1.0, 0.0),
-                            _10: from_these(1.0, 0.0), _11: from_these(0.0, 0.0) };
-    let cnot_0 = Gate::Control { control_bit: 0,
-                            _00: from_these(0.0, 0.0), _01: from_these(1.0, 0.0),
-                            _10: from_these(1.0, 0.0), _11: from_these(0.0, 0.0) };
-    let cnot_1 = Gate::Control { control_bit: 1,
-                            _00: from_these(0.0, 0.0), _01: from_these(1.0, 0.0),
-                            _10: from_these(1.0, 0.0), _11: from_these(0.0, 0.0) };
-    test_state.apply_gate(&x, vec![0]);
-    test_state.apply_gate(&cnot_0, vec![1]);
-    test_state.apply_gate(&cnot_1, vec![0]);
-    test_state.apply_gate(&cnot_0, vec![1]);
-    return Python::with_gil(|py: Python| (test_complex.real,test_complex.img,
-                            test_complex.modulus_squared(),
-                            (test_complex*test_complex).modulus_squared(),
-                            test_state.probabilities()
+    let z = from_these(vec![0.7071067811865475]);
+    let x = Gate::new(vec![0.0], vec![1.0], vec![1.0],vec![0.0]);
+    let h = Gate{ _00: z, _01: z, _10: z, _11: from_these(vec![-0.7071067811865475]) };
+    test_state.apply_gate(&h, vec![0,1],vec![]);
+    test_state.apply_gate(&x, vec![2],vec![0,1]);
+    return Python::with_gil(|py: Python| (
+                            test_state.probabilities(),
+                            (0..10).into_iter().map(|_| test_state.measure()).collect::<Vec<_>>()
     ).to_object(py))
 }
 
 /// A Python module implemented in Rust.
 #[pymodule]
 fn quantum_stuff(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(sum_as_string, m)?)?;
+    m.add_function(wrap_pyfunction!(main, m)?)?;
+    m.add_class::<QGate>()?;
+    m.add_class::<Register>()?;
     Ok(())
 }

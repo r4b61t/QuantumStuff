@@ -11,3 +11,5 @@ crate-type = ["cdylib"]
 [dependencies]
 pyo3 = "0.18.1"
 rayon = "^1.7"
+rand = "0.8"
+float-cmp = "0.9"

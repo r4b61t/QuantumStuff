@@ -24,13 +24,21 @@ impl Add for Complex {
 
 }
 
-pub fn from_these(a: f64, b:f64) -> Complex {
-    Complex{real:a, img:b}
+pub fn from_these(arg: Vec<f64>) -> Complex {
+    match arg.len() {
+        1 => Complex{real:arg[0], img:0.0},
+        2 => Complex{real:arg[0], img:arg[1]},
+        _ => panic!("Only takes vector of size 1 or 2")
+    }
 }
 
 impl Complex {
-    pub fn modulus_squared(self) -> f64 {
+    pub fn modulus_squared(&self) -> f64 {
         self.real*self.real + self.img*self.img
+    }
+
+    pub fn conjugate(&self) -> Self {
+        Self{real: self.real, img: -1.0 * self.img}
     }
 }
 
