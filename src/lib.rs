@@ -44,13 +44,11 @@ impl Register {
 fn main() -> Py<PyAny> {
     let mut test_state: State = State::new(3);
     let z = from_these(vec![0.7071067811865475]);
-    let x = Gate::new(vec![0.0], vec![1.0], vec![1.0],vec![0.0]);
     let h = Gate{ _00: z, _01: z, _10: z, _11: from_these(vec![-0.7071067811865475]) };
-    test_state.apply_gate(&h, vec![0,1],vec![]);
-    test_state.apply_gate(&x, vec![2],vec![0,1]);
+    test_state.apply_gate(&h, vec![0],vec![]);
+    test_state.apply_gate(&h, vec![1],vec![0]);
     return Python::with_gil(|py: Python| (
-                            test_state.probabilities(),
-                            (0..10).into_iter().map(|_| test_state.measure()).collect::<Vec<_>>()
+                            test_state.probabilities()
     ).to_object(py))
 }
 
