@@ -44,8 +44,8 @@ impl Gate{
 
 impl State {
     pub fn new(qubits: u32) -> Self {
-        let limit = 8;
-        if (qubits < 2) | (qubits > 8){panic!("Number of qubits must be between 2 and {}",limit)}
+        let limit = 30;
+        if (qubits < 2) | (qubits > limit){panic!("Number of qubits must be between 2 and {}",limit)}
         let dimensions: usize = 2_usize.pow(qubits);
         let mut reg = vec![from_these(vec!(1.0, 0.0))];
         reg.append(&mut vec![from_these(vec!(0.0, 0.0)); dimensions - 1]);
@@ -77,7 +77,6 @@ impl State {
         }
 
         fn apply_on(state: &mut State, gate: &Gate, target: u32, controls: &Vec<u32>) {
-        //(0..=2_u32.pow(state.qubits - 4)*state.qubits).into_par_iter()
         (0..=2_u32.pow(state.qubits -1) -1).into_par_iter()
             .for_each(|i| {
                 let a = zero_bit(i, target) as usize;
