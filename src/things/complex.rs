@@ -1,16 +1,18 @@
 use std::ops::{Mul,Add};
 
-#[derive(Copy, Clone)]
+use pyo3::FromPyObject;
+
+#[derive(Copy, Clone,FromPyObject)]
 pub struct Complex {
     pub real: f64,
-    pub img: f64,
+    pub imag: f64,
 }
 
 impl Mul for Complex {
     type Output = Self;
     fn mul(self , another: Self) -> Self { Self {
-        real : self.real * another.real - self.img * another.img,
-        img  : self.real * another.img + self.img * another.real,}
+        real : self.real * another.real - self.imag * another.imag,
+        imag  : self.real * another.imag + self.imag * another.real,}
     }
 }
 
@@ -19,26 +21,26 @@ impl Add for Complex {
 
     fn add(self, another: Self) -> Self { Self{
         real : self.real + another.real,
-        img  : self.img + another.img ,}
+        imag  : self.imag + another.imag ,}
     }
 
 }
 
 pub fn from_these(arg: Vec<f64>) -> Complex {
     match arg.len() {
-        1 => Complex{real:arg[0], img:0.0},
-        2 => Complex{real:arg[0], img:arg[1]},
+        1 => Complex{real:arg[0], imag:0.0},
+        2 => Complex{real:arg[0], imag:arg[1]},
         _ => panic!("Only takes vector of size 1 or 2")
     }
 }
 
 impl Complex {
     pub fn modulus_squared(&self) -> f64 {
-        self.real*self.real + self.img*self.img
+        self.real*self.real + self.imag*self.imag
     }
 
     pub fn conjugate(&self) -> Self {
-        Self{real: self.real, img: -1.0 * self.img}
+        Self{real: self.real, imag: -1.0 * self.imag}
     }
 }
 

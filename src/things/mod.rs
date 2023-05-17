@@ -22,17 +22,17 @@ impl Gate{
     pub fn new(a: Vec<f64>, b: Vec<f64>, c: Vec<f64> ,d: Vec<f64>) -> Self {
         let (_00,_01,_10, _11) = (from_these(a),from_these(b),from_these(c),from_these(d));
 
-        let check1 = _00.modulus_squared() + _01.modulus_squared() ;
-        let check2 = _10.modulus_squared() + _11.modulus_squared() ;
+        let check1 = _00.modulus_squared() + _10.modulus_squared() ;
+        let check2 = _01.modulus_squared() + _11.modulus_squared() ;
         let check3 = _00 * _10.conjugate() + _01 * _11.conjugate() ;
         let check4 = _00.conjugate() * _10 + _01.conjugate() * _11;
         
         if !(approx_eq!(f64,check1,1.0,ulps = 2) )|
            !(approx_eq!(f64,check2,1.0,ulps = 2) )|
            !(approx_eq!(f64,check3.real ,0.0,ulps = 2 ) )|
-           !(approx_eq!(f64,check3.img  ,0.0,ulps = 2 ) )|
+           !(approx_eq!(f64,check3.imag  ,0.0,ulps = 2 ) )|
            !(approx_eq!(f64,check4.real ,0.0,ulps = 2 ) )|
-           !(approx_eq!(f64,check4.img  ,0.0,ulps = 2 ) )
+           !(approx_eq!(f64,check4.imag  ,0.0,ulps = 2 ) )
            {
                dbg!((check1, check2,check3.real,check4.real));
                panic!{"Matrix is not unitary"} }
@@ -101,7 +101,7 @@ impl State {
     }
 
     pub fn measure(&self) -> u32{
-        let choices : Vec<u32>= (0..2_usize.pow(self.qubits) as u32).collect();
+        let choices : Vec<u32> = (0..2_usize.pow(self.qubits) as u32).collect();
         let dist = WeightedIndex::new(&self.probabilities()).unwrap();
         let mut rng = thread_rng();
         choices[dist.sample(&mut rng)]

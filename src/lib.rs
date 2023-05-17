@@ -1,3 +1,5 @@
+use core::panic;
+
 use pyo3::prelude::*;
 mod things;
 pub use crate::things::*;
@@ -14,8 +16,18 @@ struct QGate{
 #[pymethods]
 impl QGate{
     #[new]
-    pub fn new(a: Vec<f64>, b: Vec<f64>, c: Vec<f64> ,d: Vec<f64>) -> Self {
-        Self{gate: Gate::new(a, b, c, d)}
+    pub fn new(matrix : Vec<Vec<Complex>>) -> Self {
+        if matrix.len() != 2 {panic!("Only support single gate. Matrix size must be 2 by 2")}
+        if (matrix[0].len() != 2) | (matrix[1].len() != 2)
+            {panic!("Only support single gate. Matrix size must be 2 by 2")}
+        let a = matrix[0][0];
+        let b = matrix[0][1];
+        let c = matrix[1][0];
+        let d = matrix[1][1];
+        Self{gate: Gate::new(
+                vec!(a.real,a.imag), vec!(b.real,b.imag),
+                vec!(c.real,c.imag), vec!(d.real,d.imag)
+                )}
     }
 }
 #[pymethods]
