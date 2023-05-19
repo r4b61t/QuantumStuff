@@ -26,14 +26,6 @@ impl Add for Complex {
 
 }
 
-pub fn from_these(arg: Vec<f64>) -> Complex {
-    match arg.len() {
-        1 => Complex{real:arg[0], imag:0.0},
-        2 => Complex{real:arg[0], imag:arg[1]},
-        _ => panic!("Only takes vector of size 1 or 2")
-    }
-}
-
 impl Complex {
     pub fn modulus_squared(&self) -> f64 {
         self.real*self.real + self.imag*self.imag

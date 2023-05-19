@@ -12,20 +12,19 @@ pub struct State {
 }
 
 pub struct Gate{
-    pub _00: Complex,
-    pub _01: Complex,
-    pub _10: Complex,
-    pub _11: Complex,
+    pub a: Complex,
+    pub b: Complex,
+    pub c: Complex,
+    pub d: Complex,
 } 
 
 impl Gate{
-    pub fn new(a: Vec<f64>, b: Vec<f64>, c: Vec<f64> ,d: Vec<f64>) -> Self {
-        let (_00,_01,_10, _11) = (from_these(a),from_these(b),from_these(c),from_these(d));
+    pub fn new(a: Complex, b: Complex, c: Complex ,d: Complex) -> Self {
 
-        let check1 = _00.modulus_squared() + _10.modulus_squared() ;
-        let check2 = _01.modulus_squared() + _11.modulus_squared() ;
-        let check3 = _00 * _10.conjugate() + _01 * _11.conjugate() ;
-        let check4 = _00.conjugate() * _10 + _01.conjugate() * _11;
+        let check1 = a.modulus_squared() + c.modulus_squared() ;
+        let check2 = b.modulus_squared() + d.modulus_squared() ;
+        let check3 = a * c.conjugate() + b * d.conjugate() ;
+        let check4 = a.conjugate() * c + b.conjugate() * d;
         
         if !(approx_eq!(f64,check1,1.0,ulps = 2) )|
            !(approx_eq!(f64,check2,1.0,ulps = 2) )|
@@ -38,7 +37,7 @@ impl Gate{
                panic!{"Matrix is not unitary"} }
         
         
-        Gate{_00, _01, _10, _11}       
+        Gate{a,b,c,d}       
     }
 }
 
@@ -47,8 +46,8 @@ impl State {
         let limit = 30;
         if (qubits < 2) | (qubits > limit){panic!("Number of qubits must be between 2 and {}",limit)}
         let dimensions: usize = 2_usize.pow(qubits);
-        let mut reg = vec![from_these(vec!(1.0, 0.0))];
-        reg.append(&mut vec![from_these(vec!(0.0, 0.0)); dimensions - 1]);
+        let mut reg = vec![Complex{real: 1.0, imag: 0.0}];
+        reg.append(&mut vec![Complex { real: 0.0, imag: 0.0 }; dimensions - 1]);
         Self{
             register: Arc::new(Mutex::new(reg)),
             qubits,
@@ -83,7 +82,7 @@ impl State {
                 let b = a | (1 << target) as usize;
                 let v_a = state.register.lock().unwrap()[a];
                 let v_b = state.register.lock().unwrap()[b];
-                let (g00,g01,g10,g11) = (gate._00,gate._01,gate._10,gate._11);
+                let (g00,g01,g10,g11) = (gate.a,gate.b,gate.c,gate.d);
                 let new_va = mul_on(v_a,v_b,g00,g01);
                 let new_vb = mul_on(v_a,v_b,g10,g11);
                 if all_is_one(&controls, a) {

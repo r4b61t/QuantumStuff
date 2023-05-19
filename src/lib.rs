@@ -25,8 +25,7 @@ impl QGate{
         let c = matrix[1][0];
         let d = matrix[1][1];
         Self{gate: Gate::new(
-                vec!(a.real,a.imag), vec!(b.real,b.imag),
-                vec!(c.real,c.imag), vec!(d.real,d.imag)
+                a,b,c,d
                 )}
     }
 }
@@ -52,22 +51,10 @@ impl Register {
     
 }
 
-#[pyfunction]
-fn main() -> Py<PyAny> {
-    let mut test_state: State = State::new(3);
-    let z = from_these(vec![0.7071067811865475]);
-    let h = Gate{ _00: z, _01: z, _10: z, _11: from_these(vec![-0.7071067811865475]) };
-    test_state.apply_gate(&h, vec![0],vec![]);
-    test_state.apply_gate(&h, vec![1],vec![0]);
-    return Python::with_gil(|py: Python| (
-                            test_state.probabilities()
-    ).to_object(py))
-}
 
 /// A Python module implemented in Rust.
 #[pymodule]
 fn quantum_stuff(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(main, m)?)?;
     m.add_class::<QGate>()?;
     m.add_class::<Register>()?;
     Ok(())
