@@ -28,6 +28,15 @@ impl QGate{
                 a,b,c,d
                 )}
     }
+
+    #[staticmethod]
+    pub fn x() -> Self {
+        let one = Complex{real: 1.0 , imag : 0.0};
+        let zero = Complex{real: 0.0 , imag : 0.0};
+        Self{gate: Gate::new(
+                zero,one,one,zero
+                )}
+    }
 }
 #[pymethods]
 impl Register {
@@ -54,7 +63,7 @@ impl Register {
 
 /// A Python module implemented in Rust.
 #[pymodule]
-fn quantum_stuff(_py: Python, m: &PyModule) -> PyResult<()> {
+fn cyp_quantum_stuff(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<QGate>()?;
     m.add_class::<Register>()?;
     Ok(())

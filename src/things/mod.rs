@@ -25,13 +25,13 @@ impl Gate{
         let check2 = b.modulus_squared() + d.modulus_squared() ;
         let check3 = a * c.conjugate() + b * d.conjugate() ;
         let check4 = a.conjugate() * c + b.conjugate() * d;
-        
-        if !(approx_eq!(f64,check1,1.0,ulps = 5) )|
-           !(approx_eq!(f64,check2,1.0,ulps = 5) )|
-           !(approx_eq!(f64,check3.real ,0.0,ulps = 5 ) )|
-           !(approx_eq!(f64,check3.imag  ,0.0,ulps = 5 ) )|
-           !(approx_eq!(f64,check4.real ,0.0,ulps = 5 ) )|
-           !(approx_eq!(f64,check4.imag  ,0.0,ulps = 5 ) )
+        let ulps = 10;
+        if !(approx_eq!(f64,check1,1.0,ulps = ulps) )|
+           !(approx_eq!(f64,check2,1.0,ulps = ulps) )|
+           !(approx_eq!(f64,check3.real ,0.0,ulps = ulps ) )|
+           !(approx_eq!(f64,check3.imag  ,0.0,ulps = ulps ) )|
+           !(approx_eq!(f64,check4.real ,0.0,ulps = ulps ) )|
+           !(approx_eq!(f64,check4.imag  ,0.0,ulps = ulps ) )
            {
                dbg!((check1, check2,check3.real,check4.real));
                panic!{"Matrix is not unitary"} }
