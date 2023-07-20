@@ -3,8 +3,8 @@ requires = ["maturin>=0.14,<0.15"]
 build-backend = "maturin"
 
 [project]
-name = "quantum_stuff"
-requires-python = ">=3.7"
+name = "cyp_quantum_circuit"
+requires-python = ">=3.10"
 classifiers = [
     "Programming Language :: Rust",
     "Programming Language :: Python :: Implementation :: CPython",

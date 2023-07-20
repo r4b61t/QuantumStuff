@@ -63,7 +63,7 @@ impl Register {
 
 /// A Python module implemented in Rust.
 #[pymodule]
-fn quantum_stuff(_py: Python, m: &PyModule) -> PyResult<()> {
+fn cyp_quantum_circuit(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<QGate>()?;
     m.add_class::<Register>()?;
     Ok(())

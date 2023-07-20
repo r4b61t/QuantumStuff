@@ -1,11 +1,11 @@
 [package]
-name = "cyp_quantum_stuff"
+name = "cyp_quantum_circuit"
 version = "0.1.1"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [lib]
-name = "quantum_stuff"
+name = "cyp_quantum_circuit"
 crate-type = ["cdylib"]
 
 [dependencies]
