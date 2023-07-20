@@ -80,12 +80,12 @@ impl State {
             .for_each(|i| {
                 let a = zero_bit(i, target) as usize;
                 let b = a | (1 << target) as usize;
-                let v_a = state.register.lock().unwrap()[a];
-                let v_b = state.register.lock().unwrap()[b];
-                let (g00,g01,g10,g11) = (gate.a,gate.b,gate.c,gate.d);
-                let new_va = mul_on(v_a,v_b,g00,g01);
-                let new_vb = mul_on(v_a,v_b,g10,g11);
                 if all_is_one(&controls, a) {
+                    let v_a = state.register.lock().unwrap()[a];
+                    let v_b = state.register.lock().unwrap()[b];
+                    let (g00,g01,g10,g11) = (gate.a,gate.b,gate.c,gate.d);
+                    let new_va = mul_on(v_a,v_b,g00,g01);
+                    let new_vb = mul_on(v_a,v_b,g10,g11);
                     state.register.lock().unwrap()[a] = new_va;
                     state.register.lock().unwrap()[b] = new_vb;
                 }
