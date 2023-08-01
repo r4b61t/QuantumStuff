@@ -29,14 +29,6 @@ impl QGate{
                 )}
     }
 
-    #[staticmethod]
-    pub fn x() -> Self {
-        let one = Complex{real: 1.0 , imag : 0.0};
-        let zero = Complex{real: 0.0 , imag : 0.0};
-        Self{gate: Gate::new(
-                zero,one,one,zero
-                )}
-    }
 }
 #[pymethods]
 impl Register {
@@ -53,8 +45,12 @@ impl Register {
         self.state.probabilities()
     }
     
-    fn measure(&self) -> u32 {
-        self.state.measure()
+    fn measure(&mut self,target:u32) -> u32 {
+        self.state.measure(target)
+    }
+
+    fn measure_all(&self) -> u32 {
+        self.state.measure_all()
     }
     // measure
     
